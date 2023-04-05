@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class KnifeMove : ThanhMonoBehaviour
 {
@@ -11,27 +12,36 @@ public class KnifeMove : ThanhMonoBehaviour
     protected Vector3 directionFly = Vector3.up;
     [SerializeField] protected bool isFlying = false;
     [SerializeField] protected Rigidbody2D knifeRb;
-    [SerializeField] protected BoxCollider2D knifeColl;
+    [SerializeField] protected CircleCollider2D knifeColl;
     [SerializeField] protected KnifeCtrl knifeCtrl;
     public KnifeCtrl KnifeCtrl { get => knifeCtrl; }
     protected Vector3 lastVelocity;
     protected Vector3 posBeforeFly;
-    KnifeShootLine knifeLine;
+    [SerializeField]protected TrailRenderer dashLine;
+    protected KnifeShootLine knifeLine;
     public bool isMouseDown = false;
     protected int countColl = 0;
+  
     protected override void Awake()
     {
         base.Awake();
         this.posBeforeFly = transform.position;
+        
     }
+  
     protected override void LoadComponent()
     {
         base.LoadComponent();
         this.LoadKnifeRb();
         this.LoadKnifeCollider();
-        this.LoadKnifeCtrl(); 
+        this.LoadKnifeCtrl();
+        this.LoadDashLine();
     }
-
+    private void LoadDashLine()
+    {
+        if (this.dashLine != null) return;
+        this.dashLine = this.GetComponent<TrailRenderer>();
+    }
     private void LoadKnifeCtrl()
     {
         if (this.knifeCtrl != null) return;
@@ -46,27 +56,29 @@ public class KnifeMove : ThanhMonoBehaviour
     private void LoadKnifeCollider()
     {
         if (this.knifeColl != null) return;
-        this.knifeColl = this.GetComponent<BoxCollider2D>();
+        this.knifeColl = this.GetComponent<CircleCollider2D>();
     }
     private void FixedUpdate()
     {
-        if (isFlying == false )
+        if (isFlying == false)
         {
-            if(isMouseDown)
+            if (isMouseDown)
             {
                 this.GetTargetPos();
-                this.RotateKnife();
-            }    
+                this.RotateLaze();
+                directionFly = (this.targetPos - this.transform.parent.position);
+                this.knifeCtrl.KnifeShootLine.line.gameObject.SetActive(true);
+            }
             
-           
         }
-     
+
         if (isFlying == true)
         {
-            transform.parent.Translate(directionFly * speedFly * Time.fixedDeltaTime);
+        
+            dashLine.emitting = true;
+            this.transform.parent.Translate(directionFly.normalized * speedFly * Time.deltaTime);
             this.knifeCtrl.KnifeShootLine.line.gameObject.SetActive(false);
-        }
-      
+        } 
     }
    
     private void Update()
@@ -75,51 +87,80 @@ public class KnifeMove : ThanhMonoBehaviour
         {
             
             isFlying = true;
+            isMouseDown = false;
         }
         if(Input.GetAxis("Fire1") == 1)
         {
             isMouseDown = true;
-        }    
+        }
+           
        
     }
+  
 
     private void GetTargetPos()
     {
-        this.targetPos = InputManager.Instance.MouseWorldPos;
-        this.targetPos.z = 0;
+        if (InputManager.Instance.MouseWorldPos.y >= this.transform.parent.position.y + 0.5f)
+        {
+            this.targetPos = InputManager.Instance.MouseWorldPos;
+            this.targetPos.z = 0;
+        }
     }
-    private void RotateKnife()
+    private void RotateLaze()
     {
-        if (this.targetPos.y <= transform.parent.position.y) return;
-      
-     
-        Vector3 diff = this.targetPos - transform.parent.position;
+        var posLaze = this.knifeCtrl.KnifeShootLine.transform.position;
+        Vector3 diff = this.targetPos - posLaze;
         diff.Normalize();
         float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
-        this.transform.parent.rotation =  Quaternion.Euler(0f, 0f, rot_z-90);
+        this.knifeCtrl.KnifeShootLine.transform.rotation = Quaternion.Euler(0f, 0f, rot_z - 90);
 
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        countColl++;
-        if(countColl<4)
+        Debug.Log("hit");
+        if ( collision.gameObject.CompareTag("tuong"))
         {
-            Vector3 diff = transform.position - this.posBeforeFly;
-            var direction = Vector3.Reflect(diff.normalized, collision.contacts[0].normal);
-            float rot_z = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            this.transform.parent.rotation = Quaternion.Euler(0f, 0f, rot_z - 90);
-            Debug.Log(diff.normalized);
-            this.posBeforeFly = transform.position;
-        }else
-        {
-            Invoke("ResetKnife", 2);
-        }    
-      
-        
+            countColl++;
+            if (countColl < 4)
+            {
+                Vector3 diff = transform.parent.position - this.posBeforeFly;
+                this.directionFly = Vector3.Reflect(diff.normalized, collision.contacts[0].normal);
+                this.posBeforeFly = transform.parent.position;
+                
+                
+            }
+            else
+            {
+                Invoke(nameof(this.DestroyKnife), 1);
+                Invoke("ResetKnife", 1.5f);
+                this.knifeColl.isTrigger = true;
+            }
+        }
+        if (collision.gameObject.tag == "ground")
+            {
+                this.knifeColl.isTrigger = true;
+                Invoke(nameof(this.DestroyKnife), 1);
+                Invoke("ResetKnife", 1.5f);
+
+        }
+
+
     }
     private void ResetKnife()
     {
-        Destroy(this.transform.parent.gameObject);
+        this.knifeColl.isTrigger = false;
+        this.transform.parent.position = this.knifeCtrl.pos;
+        this.transform.position = this.knifeCtrl.pos;
+        posBeforeFly = this.knifeCtrl.pos;
+        this.countColl = 0;
+        this.knifeCtrl.KnifeShootLine.transform.position = new Vector3(0f, this.knifeCtrl.pos.y, 0f);
+        isFlying = false;
+        this.transform.parent.gameObject.SetActive(true);
+
+    }
+    private void DestroyKnife()
+    {
+        this.transform.parent.gameObject.SetActive(false);
     }
 
 }

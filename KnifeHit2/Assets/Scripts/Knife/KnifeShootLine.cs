@@ -11,11 +11,7 @@ public class KnifeShootLine : ThanhMonoBehaviour
     [SerializeField] protected KnifeCtrl knifeCtrl;
     public KnifeCtrl KnifeCtrl { get => knifeCtrl; }
 
-    private void Start()
-    {
-     
-
-    }
+ 
 
     protected override void LoadComponent()
     {
@@ -34,9 +30,9 @@ public class KnifeShootLine : ThanhMonoBehaviour
         else Physics2D.queriesStartInColliders = true;
         line.positionCount = 1;
         line.SetPosition(0, transform.position);
-        RaycastHit2D hitInfo = Physics2D.Raycast(transform.parent.position, transform.parent.up, maxRayDistance, layerDetection);
+        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, transform.up, maxRayDistance, layerDetection);
         // Ray
-        Ray2D ray = new Ray2D(transform.parent.position, transform.parent.up);
+        Ray2D ray = new Ray2D(transform.position, transform.up);
 
         bool isMirror = false;
         Vector2 mirrorHitPoint = Vector2.zero;
@@ -54,7 +50,7 @@ public class KnifeShootLine : ThanhMonoBehaviour
                 isMirror = false;
                 if (hitInfo.collider.CompareTag("tuong"))
                 {
-                    mirrorHitPoint = hitInfo.point - new Vector2(transform.parent.position.x,transform.parent.position.y);
+                    mirrorHitPoint = hitInfo.point - new Vector2(transform.position.x,transform.position.y);
                     mirrorHitNormal = (Vector2)hitInfo.normal;
                     hitInfo = Physics2D.Raycast((Vector2)hitInfo.point - ray.direction * -0.1f, Vector2.Reflect(mirrorHitPoint, hitInfo.normal), maxRayDistance, layerDetection);
                     isMirror = true;
@@ -71,7 +67,7 @@ public class KnifeShootLine : ThanhMonoBehaviour
                 }
                 else
                 {
-                    line.SetPosition(line.positionCount - 1, transform.parent.position + transform.parent.up * maxRayDistance);
+                    line.SetPosition(line.positionCount - 1, transform.position + transform.up * maxRayDistance);
                     break;
                 }
             }
