@@ -6,6 +6,8 @@ TagManager:
   tags:
   - tuong
   - ground
+  - fruits
+  - knife
   layers:
   - Default
   - TransparentFX

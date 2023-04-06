@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,8 @@ public class InputManager : ThanhMonoBehaviour
     public static InputManager Instance { get => instance; }
     [SerializeField] protected Vector3 mouseWorldPos;
     public Vector3 MouseWorldPos { get => mouseWorldPos; }
+    [SerializeField] protected Transform ly;
+    public Transform Ly { get => ly;}
     //[SerializeField] protected bool onFiring;
     //public bool OnFiring { get => onFiring; }
     // Start is called before the first frame update
@@ -16,7 +19,19 @@ public class InputManager : ThanhMonoBehaviour
         if (InputManager.instance != null) Debug.LogError("Only 1 InputManager exist");
         InputManager.instance = this;
     }
-  
+    protected override void LoadComponent()
+    {
+        base.LoadComponent();
+        this.LoadLyPos();
+    }
+
+    private void LoadLyPos()
+    {
+        if (this.ly != null) return;
+        this.ly = transform.Find("Ly");
+
+    }
+
     void FixedUpdate()
     {
         
