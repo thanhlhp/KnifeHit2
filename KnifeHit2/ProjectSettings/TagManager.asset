@@ -8,6 +8,8 @@ TagManager:
   - ground
   - fruits
   - knife
+  - box
+  - saw
   layers:
   - Default
   - TransparentFX

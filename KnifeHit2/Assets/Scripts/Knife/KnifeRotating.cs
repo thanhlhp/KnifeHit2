@@ -15,7 +15,8 @@ public class KnifeRotating : ThanhMonoBehaviour
     }
     private void FixedUpdate()
     {
-        this.Rotating();
+        if(this.knifeCtrl.KnifeMove.IsKnifeDown == false)
+            this.Rotating();
     }
 
     private void Rotating()

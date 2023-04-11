@@ -8,7 +8,7 @@ using static UnityEditor.PlayerSettings;
 public class KnifeMove : ThanhMonoBehaviour
 {
     [SerializeField] protected Vector3 targetPos;
-    [SerializeField] protected float speedFly = 15f;
+    [SerializeField] protected float speedFly = 9f;
     protected Vector3 directionFly = Vector3.up;
     [SerializeField] protected bool isFlying = false;
     [SerializeField] protected Rigidbody2D knifeRb;
@@ -21,7 +21,9 @@ public class KnifeMove : ThanhMonoBehaviour
     protected KnifeShootLine knifeLine;
     public bool isMouseDown = false;
     protected int countColl = 0;
-  
+    private bool isKnifeDown = false;
+    public bool IsKnifeDown { get => isKnifeDown; }
+
     protected override void Awake()
     {
         base.Awake();
@@ -69,6 +71,12 @@ public class KnifeMove : ThanhMonoBehaviour
                 directionFly = (this.targetPos - this.transform.parent.position);
                 this.knifeCtrl.KnifeShootLine.line.gameObject.SetActive(true);
             }
+            if(isKnifeDown)
+            {
+                dashLine.emitting = false;
+                StartCoroutine(this.KnifeDown());
+                
+            }    
             
         }
 
@@ -108,6 +116,7 @@ public class KnifeMove : ThanhMonoBehaviour
     }
     private void RotateLaze()
     {
+        
         var posLaze = this.knifeCtrl.KnifeShootLine.transform.position;
         Vector3 diff = this.targetPos - posLaze;
         diff.Normalize();
@@ -131,20 +140,34 @@ public class KnifeMove : ThanhMonoBehaviour
             }
             else
             {
-                Invoke(nameof(this.DestroyKnife), 1);
-                Invoke("ResetKnife", 1.5f);
+                Invoke(nameof(this.DestroyKnife), 0.5f);
+                Invoke("ResetKnife", 1f);
                 this.knifeColl.isTrigger = true;
             }
         }
         if (collision.gameObject.tag == "ground")
             {
                 this.knifeColl.isTrigger = true;
-                Invoke(nameof(this.DestroyKnife), 1);
-                Invoke("ResetKnife", 1.5f);
+                Invoke(nameof(this.DestroyKnife), 0.5f);
+                Invoke("ResetKnife", 1f);
 
         }
+       
 
 
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "box")
+        {
+            this.transform.parent.gameObject.SetActive(false);
+            Invoke("ResetKnife", 1);
+        }
+        if(collision.gameObject.tag == "saw")
+        {
+            isKnifeDown = true;
+            isFlying = false;
+        }    
     }
     private void ResetKnife()
     {
@@ -156,11 +179,19 @@ public class KnifeMove : ThanhMonoBehaviour
         this.knifeCtrl.KnifeShootLine.transform.position = new Vector3(0f, this.knifeCtrl.pos.y, 0f);
         isFlying = false;
         this.transform.parent.gameObject.SetActive(true);
+        isKnifeDown = false;
+        GamePlayManager.Instance.knifeNumber--;
 
     }
     private void DestroyKnife()
     {
         this.transform.parent.gameObject.SetActive(false);
+    }
+    private IEnumerator KnifeDown()
+    {
+        this.transform.parent.Translate(Vector3.down * 6f * Time.deltaTime);
+        yield return new WaitForSeconds(2);
+        this.ResetKnife();
     }
 
 }
