@@ -25,53 +25,56 @@ public class KnifeShootLine : ThanhMonoBehaviour
     }
     private void Update()
     {
-        if (this.KnifeCtrl.KnifeMove.isMouseDown == true)
-            Physics2D.queriesStartInColliders = false;
-        else Physics2D.queriesStartInColliders = true;
-        line.positionCount = 1;
-        line.SetPosition(0, transform.position);
-        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, transform.up, maxRayDistance, layerDetection);
-        // Ray
-        Ray2D ray = new Ray2D(transform.position, transform.up);
-
-        bool isMirror = false;
-        Vector2 mirrorHitPoint = Vector2.zero;
-        Vector2 mirrorHitNormal = Vector2.zero;
-
-
-        for (int i = 0; i < reflections; i++)
+        if (GamePlayManager.Instance.isPlaying)
         {
-            line.positionCount += 1;
+            if (this.KnifeCtrl.KnifeMove.isMouseDown == true)
+                Physics2D.queriesStartInColliders = false;
+            else Physics2D.queriesStartInColliders = true;
+            line.positionCount = 1;
+            line.SetPosition(0, transform.position);
+            RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, transform.up, maxRayDistance, layerDetection);
+            // Ray
+            Ray2D ray = new Ray2D(transform.position, transform.up);
 
-            if (hitInfo.collider != null)
+            bool isMirror = false;
+            Vector2 mirrorHitPoint = Vector2.zero;
+            Vector2 mirrorHitNormal = Vector2.zero;
+
+
+            for (int i = 0; i < reflections; i++)
             {
-                line.SetPosition(line.positionCount - 1, hitInfo.point - ray.direction * -0.1f);
+                line.positionCount += 1;
 
-                isMirror = false;
-                if (hitInfo.collider.CompareTag("tuong"))
+                if (hitInfo.collider != null)
                 {
-                    mirrorHitPoint = hitInfo.point - new Vector2(transform.position.x,transform.position.y);
-                    mirrorHitNormal = (Vector2)hitInfo.normal;
-                    hitInfo = Physics2D.Raycast((Vector2)hitInfo.point - ray.direction * -0.1f, Vector2.Reflect(mirrorHitPoint, hitInfo.normal), maxRayDistance, layerDetection);
-                    isMirror = true;
-                }
-                else
-                    break;
-            }
-            else
-            {
-                if (isMirror)
-                {
-                    line.SetPosition(line.positionCount - 1, Vector2.Reflect(mirrorHitPoint, mirrorHitNormal) * maxRayDistance);
-                    break;
-                }
-                else
-                {
-                    line.SetPosition(line.positionCount - 1, transform.position + transform.up * maxRayDistance);
-                    break;
-                }
-            }
+                    line.SetPosition(line.positionCount - 1, hitInfo.point - ray.direction * -0.1f);
 
+                    isMirror = false;
+                    if (hitInfo.collider.CompareTag("tuong"))
+                    {
+                        mirrorHitPoint = hitInfo.point - new Vector2(transform.position.x, transform.position.y);
+                        mirrorHitNormal = (Vector2)hitInfo.normal;
+                        hitInfo = Physics2D.Raycast((Vector2)hitInfo.point - ray.direction * -0.1f, Vector2.Reflect(mirrorHitPoint, hitInfo.normal), maxRayDistance, layerDetection);
+                        isMirror = true;
+                    }
+                    else
+                        break;
+                }
+                //else
+                //{
+                //    if (isMirror)
+                //    {
+                //        line.SetPosition(line.positionCount - 1, Vector2.Reflect(mirrorHitPoint, mirrorHitNormal) * maxRayDistance);
+                //        break;
+                //    }
+                //    else
+                //    {
+                //        line.SetPosition(line.positionCount - 1, transform.position + transform.up * maxRayDistance);
+                //        break;
+                //    }
+                //}
+
+            }
         }
     }
 }

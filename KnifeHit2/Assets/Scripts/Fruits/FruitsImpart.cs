@@ -27,6 +27,8 @@ public class FruitsImpart : BoxImpart
         this.transform.parent.position = Vector3.MoveTowards(transform.parent.position, viTriLy.position, speedDown * Time.fixedDeltaTime);
         yield return new WaitForSeconds(1);
         Destroy(this.transform.parent.gameObject);
+        GamePlayManager.Instance.score++;
+     
 
     }
 }

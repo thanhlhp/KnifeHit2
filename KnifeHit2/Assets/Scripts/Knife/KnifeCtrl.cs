@@ -10,6 +10,8 @@ public class KnifeCtrl : ThanhMonoBehaviour
         public KnifeMove KnifeMove { get => knifeMove; }
         [SerializeField] protected KnifeShootLine knifeShootLine;
         public KnifeShootLine KnifeShootLine { get => knifeShootLine; }
+        [SerializeField] protected KnifeImpart knifeImpart;
+        public KnifeImpart KnifeImpart { get => knifeImpart; }
         public Vector3 pos;
         public Quaternion ros;
         public Transform model;
@@ -18,6 +20,7 @@ public class KnifeCtrl : ThanhMonoBehaviour
                 base.LoadComponent();
                 this.LoadKnifeMove();
                 this.LoadKnifeShootLine();
+                this.LoadKnifeImpart();
             }
         private void Start()
             {
@@ -36,5 +39,11 @@ public class KnifeCtrl : ThanhMonoBehaviour
                 if (this.knifeMove != null) return;
                 this.knifeMove = this.GetComponentInChildren<KnifeMove>();
             }
+
+        private void LoadKnifeImpart()
+        {
+            if (this.knifeImpart != null) return;
+            this.knifeImpart = this.GetComponentInChildren<KnifeImpart>();
+        }
 }
 

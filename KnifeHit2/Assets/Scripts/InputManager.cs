@@ -34,7 +34,7 @@ public class InputManager : ThanhMonoBehaviour
 
     void FixedUpdate()
     {
-        
+        if(GamePlayManager.Instance.isPlaying)
         this.GetMousePos();
         
         
@@ -45,7 +45,8 @@ public class InputManager : ThanhMonoBehaviour
     }
     protected virtual void GetMousePos()
     {
-        mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        
+            mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
     }
    

@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4164166633758602281}
-  - component: {fileID: 4164166633758602280}
   - component: {fileID: 4164166634628531465}
+  - component: {fileID: 4936856547623597630}
+  - component: {fileID: 4273742425431321526}
   m_Layer: 0
   m_Name: Fruit_impart
   m_TagString: fruits
@@ -33,22 +34,6 @@ Transform:
   m_Father: {fileID: 4164166635293944830}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &4164166633758602280
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4164166633758602286}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.27
 --- !u!114 &4164166634628531465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,9 +46,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675fd3ef69ed34ef99e72046812810a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  circleColl: {fileID: 0}
-  boxColl: {fileID: 4164166633758602280}
+  boxColl: {fileID: 4273742425431321526}
+  model: {fileID: 0}
   speedDown: 10
+--- !u!50 &4936856547623597630
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4164166633758602286}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!61 &4273742425431321526
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4164166633758602286}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.002044797, y: -0.02658078}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.54089355, y: 0.5040894}
+  m_EdgeRadius: 0
 --- !u!1 &4164166633808505609
 GameObject:
   m_ObjectHideFlags: 0

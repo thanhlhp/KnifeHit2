@@ -10,7 +10,7 @@ public class KnifeMove : ThanhMonoBehaviour
     [SerializeField] protected Vector3 targetPos;
     [SerializeField] protected float speedFly = 9f;
     protected Vector3 directionFly = Vector3.up;
-    [SerializeField] protected bool isFlying = false;
+    public bool isFlying = false;
     [SerializeField] protected Rigidbody2D knifeRb;
     [SerializeField] protected CircleCollider2D knifeColl;
     [SerializeField] protected KnifeCtrl knifeCtrl;
@@ -21,7 +21,7 @@ public class KnifeMove : ThanhMonoBehaviour
     protected KnifeShootLine knifeLine;
     public bool isMouseDown = false;
     protected int countColl = 0;
-    private bool isKnifeDown = false;
+    public bool isKnifeDown = false;
     public bool IsKnifeDown { get => isKnifeDown; }
 
     protected override void Awake()
@@ -62,45 +62,51 @@ public class KnifeMove : ThanhMonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (isFlying == false)
-        {
-            if (isMouseDown)
+            if (isFlying == false)
             {
-                this.GetTargetPos();
-                this.RotateLaze();
-                directionFly = (this.targetPos - this.transform.parent.position);
-                this.knifeCtrl.KnifeShootLine.line.gameObject.SetActive(true);
-            }
-            if(isKnifeDown)
-            {
-                dashLine.emitting = false;
-                StartCoroutine(this.KnifeDown());
-                
-            }    
-            
-        }
+                if (isMouseDown)
+                {
+                    this.GetTargetPos();
+                    this.RotateLaze();
+                    directionFly = (this.targetPos - this.transform.parent.position);
+                    this.knifeCtrl.KnifeShootLine.line.gameObject.SetActive(true);
+                }
+                if (isKnifeDown)
+                {
+                    dashLine.emitting = false;
+                    StartCoroutine(this.KnifeDown());
 
-        if (isFlying == true)
-        {
+                }
+
+            }
+
+            if (isFlying == true)
+            {
+
+                dashLine.emitting = true;
+                this.transform.parent.Translate(directionFly.normalized * speedFly * Time.deltaTime);
+                this.knifeCtrl.KnifeShootLine.line.gameObject.SetActive(false);
+            }
         
-            dashLine.emitting = true;
-            this.transform.parent.Translate(directionFly.normalized * speedFly * Time.deltaTime);
-            this.knifeCtrl.KnifeShootLine.line.gameObject.SetActive(false);
-        } 
     }
    
     private void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (GamePlayManager.Instance.isPlaying)
         {
-            
-            isFlying = true;
-            isMouseDown = false;
+            if (Input.GetMouseButtonUp(0))
+            {
+
+                isFlying = true;
+                isMouseDown = false;
+            }
+            if (Input.GetAxis("Fire1") == 1)
+            {
+                isMouseDown = true;
+            }
         }
-        if(Input.GetAxis("Fire1") == 1)
-        {
-            isMouseDown = true;
-        }
+        else ResetKnife();
+        GamePlayManager.Instance.isFlyingKnife = isFlying;
            
        
     }
@@ -150,27 +156,16 @@ public class KnifeMove : ThanhMonoBehaviour
                 this.knifeColl.isTrigger = true;
                 Invoke(nameof(this.DestroyKnife), 0.5f);
                 Invoke("ResetKnife", 1f);
-
+            
         }
        
 
 
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    public void ResetKnife()
     {
-        if (collision.gameObject.tag == "box")
-        {
-            this.transform.parent.gameObject.SetActive(false);
-            Invoke("ResetKnife", 1);
-        }
-        if(collision.gameObject.tag == "saw")
-        {
-            isKnifeDown = true;
-            isFlying = false;
-        }    
-    }
-    private void ResetKnife()
-    {
+        
         this.knifeColl.isTrigger = false;
         this.transform.parent.position = this.knifeCtrl.pos;
         this.transform.position = this.knifeCtrl.pos;
@@ -180,7 +175,8 @@ public class KnifeMove : ThanhMonoBehaviour
         isFlying = false;
         this.transform.parent.gameObject.SetActive(true);
         isKnifeDown = false;
-        GamePlayManager.Instance.knifeNumber--;
+        if(GamePlayManager.Instance.isPlaying)
+            GamePlayManager.Instance.knifeNumber--;
 
     }
     private void DestroyKnife()

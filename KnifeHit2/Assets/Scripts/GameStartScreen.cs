@@ -6,11 +6,12 @@ using UnityEngine.UI;
 
 public class GameStartScreen : ThanhMonoBehaviour
 {
-   [SerializeField] protected Button startBtn;
+    [SerializeField] protected Button startBtn;
+
     public void StartGame()
     {
         SceneManager.LoadScene("Gameplay_scene");
-
+        
     }
     
 }
