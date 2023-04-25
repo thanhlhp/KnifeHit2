@@ -36,7 +36,7 @@ public class KnifeShootLine : ThanhMonoBehaviour
             // Ray
             Ray2D ray = new Ray2D(transform.position, transform.up);
 
-            bool isMirror = false;
+            //bool isMirror = false;
             Vector2 mirrorHitPoint = Vector2.zero;
             Vector2 mirrorHitNormal = Vector2.zero;
 
@@ -49,13 +49,13 @@ public class KnifeShootLine : ThanhMonoBehaviour
                 {
                     line.SetPosition(line.positionCount - 1, hitInfo.point - ray.direction * -0.1f);
 
-                    isMirror = false;
+                    //isMirror = false;
                     if (hitInfo.collider.CompareTag("tuong"))
                     {
                         mirrorHitPoint = hitInfo.point - new Vector2(transform.position.x, transform.position.y);
                         mirrorHitNormal = (Vector2)hitInfo.normal;
                         hitInfo = Physics2D.Raycast((Vector2)hitInfo.point - ray.direction * -0.1f, Vector2.Reflect(mirrorHitPoint, hitInfo.normal), maxRayDistance, layerDetection);
-                        isMirror = true;
+                        //isMirror = true;
                     }
                     else
                         break;

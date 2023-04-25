@@ -13,9 +13,7 @@ public class GameWinScreen : ThanhMonoBehaviour
     }
     public void NextLv()
     {
-        gameObject.SetActive(false);
-        GamePlayManager.Instance.knifeNumber = 3;
-     
+        gameObject.SetActive(false); 
         GamePlayManager.Instance.EndLevel();
     }
 }

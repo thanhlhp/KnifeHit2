@@ -10,6 +10,7 @@ TagManager:
   - knife
   - box
   - saw
+  - TileHolder
   layers:
   - Default
   - TransparentFX

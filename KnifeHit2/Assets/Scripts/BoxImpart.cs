@@ -37,11 +37,13 @@ public class BoxImpart : ThanhMonoBehaviour
     //}
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "knife" && GamePlayManager.Instance.isFlyingKnife== true)
+        if (collision.gameObject.tag == "knife" && GamePlayManager.Instance.isFlyingKnife== true )
         {
+            boxColl.enabled = false;
             isCollinding = true;
-
-                    }
+            if(boxColl.gameObject.tag == "fruits")
+                GamePlayManager.Instance.score++;
+        }
     }
 }
 

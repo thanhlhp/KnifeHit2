@@ -14,7 +14,7 @@ public class FruitsImpart : BoxImpart
         base.ResetValue();
         this.speedDown = 10;
     }
-    private void FixedUpdate()
+    private void Update()
     {
         if(isCollinding)
         {
@@ -24,10 +24,11 @@ public class FruitsImpart : BoxImpart
     private IEnumerator CollProcess()
     {
         Transform viTriLy = InputManager.Instance.Ly;
-        this.transform.parent.position = Vector3.MoveTowards(transform.parent.position, viTriLy.position, speedDown * Time.fixedDeltaTime);
+        this.transform.parent.position = Vector3.MoveTowards(transform.parent.position, viTriLy.position, speedDown * Time.deltaTime);
+        
         yield return new WaitForSeconds(1);
         Destroy(this.transform.parent.gameObject);
-        GamePlayManager.Instance.score++;
+        
      
 
     }

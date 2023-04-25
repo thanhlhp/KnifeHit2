@@ -21,7 +21,7 @@ public class GamePlayManager : ThanhMonoBehaviour
         GamePlayManager.instance = this;
 
     }
-    private void FixedUpdate()
+    private void Update()
     {
         
         Debug.Log(level);

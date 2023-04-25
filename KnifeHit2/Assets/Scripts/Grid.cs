@@ -6,7 +6,7 @@ public class Grid: ThanhMonoBehaviour
     [SerializeField] protected int width, height;
     [SerializeField] private float cellSize;
     [SerializeField] Transform posPoint;
-    private int[,] gridArray;
+    [SerializeField] private int[,] gridArray;
     private void Start()
     {
         this.GenarateGrid(this.width, height, cellSize);
